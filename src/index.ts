@@ -15,6 +15,8 @@ import {
 } from "graphql-query-complexity";
 import { separateOperations } from "graphql";
 
+const expressGraphQL = require('express-graphql')
+
 const RedisStore = connectRedis(session);
 
 (async () => {
@@ -37,14 +39,21 @@ const RedisStore = connectRedis(session);
         })
     );
 
+
     try {
         await createConnection();
 
         const schema = await createSchema();
+        
+        app.use('/graphql', expressGraphQL({
+            schema: schema,
+            graphiql: true,
+          }));
 
         const apolloServer = new ApolloServer({
             schema,
             context: ({ req, res }) => ({ req, res }),
+            
             plugins: [
                 {
                     requestDidStart: () => ({
