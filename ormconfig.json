@@ -2,7 +2,7 @@
     "type": "postgres",
     "host": "localhost",
     "port": 5432,
-    "username": "postgresz",
+    "username": "postgres",
     "password": "postgres",
     "database": "typegraphql_series_test",
     "synchronize": true,

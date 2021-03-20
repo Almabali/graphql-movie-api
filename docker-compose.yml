@@ -10,7 +10,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER=postgresz
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=typegraphql_series_test
     volumes:
