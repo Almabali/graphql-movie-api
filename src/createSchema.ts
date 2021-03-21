@@ -8,6 +8,7 @@ import { LogoutResolver } from "./modules/user/LogoutResolver";
 import { MeResolver } from "./modules/user/MeResolver";
 import { CreateUser } from "./modules/user/CreateUserResolver";
 import { MovieResolver } from "./modules/movie/MovieResolver";
+import { GenreResolver } from "./modules/genre/GenreResolver";
 
 export const createSchema = async () =>
     await buildSchema({
@@ -20,6 +21,7 @@ export const createSchema = async () =>
             LogoutResolver,
             MeResolver,
             CreateUser,
-            MovieResolver
+            MovieResolver,
+            GenreResolver
         ]
     });

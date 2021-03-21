@@ -12,7 +12,7 @@ export class MovieInput {
     year: number;
 
     @Field()
-    categoryId: number;
+    genreId: number;
 
     @Field(() => [Int])
     actorIds: number[];

@@ -1,7 +1,7 @@
 import { ObjectType, Field, ID, Root, Int } from "type-graphql";
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Actor } from "./Actor";
-import { Category } from "./Category";
+import { Genre } from "./Genre";
 
 @ObjectType()
 @Entity()
@@ -20,11 +20,11 @@ export class Movie extends BaseEntity {
 
     @Field()
     @Column("int")
-    categoryId: number;
+    genreId: number;
 
     @Field()
-    category(@Root() parent: Movie): Category {
-        return {id: 1, name: "Adventure", description: parent.title} // TODO
+    genre(@Root() parent: Movie): Genre {
+        return {id: 1, name: "Adventure", description: parent.title} as Genre // TODO
     }
 
     @Field(() => [Int])

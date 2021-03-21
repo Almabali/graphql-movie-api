@@ -4,11 +4,6 @@ import { MovieInput } from "./MovieInput";
 
 @Resolver()
 export class MovieResolver {
-    @Query(() => String)
-    hello(): string {
-        return "hello user";
-    }
-
     @Query(() => [Movie])
     async movies(): Promise<Movie[]> {
         const movies = await Movie.find();
@@ -16,18 +11,24 @@ export class MovieResolver {
         return movies;
     }
 
+    @Query(() => Movie)
+    async movie(@Arg("input") id: number): Promise<Movie | undefined> {
+        const movie = await Movie.findOne(id);
+        return movie
+    }
+
     @Mutation(() => Movie)
     async addMovie(@Arg("input")
     {
         title,
         year,
-        categoryId,
+        genreId,
         actorIds
     }: MovieInput): Promise<Movie> {
         const movie = await Movie.create({
             title,
             year,
-            categoryId,
+            genreId,
             actorIds
         }).save();
 
