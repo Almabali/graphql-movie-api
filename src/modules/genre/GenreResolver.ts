@@ -18,7 +18,7 @@ export class GenreResolver {
     }
 
     @Mutation(() => Genre)
-    async addGenre(@Arg("input")
+    async addGenre(@Arg("input", () => GenreInput)
     {
         name,
         description
