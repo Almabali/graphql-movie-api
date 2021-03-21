@@ -1,6 +1,8 @@
 import { Resolver, Query, Mutation, Arg, Int } from "type-graphql";
 import { Movie } from "../../entity/Movie";
 import { MovieInput } from "./MovieInput";
+import { MovieSearchInput } from "./MovieSearchInput";
+import { ActorSearchInput } from "../actor/ActorSearchInput";
 
 @Resolver()
 export class MovieResolver {
@@ -11,10 +13,20 @@ export class MovieResolver {
     }
 
     @Query(() => [Movie])
-    async movies(): Promise<Movie[]> {
-        const movies = await Movie.find();
+    async movies(@Arg("input", () => MovieSearchInput, { nullable: true }) input: MovieSearchInput): Promise<Movie[]> {
+        let movies = await Movie.find();
+        if (!input) { return movies }
 
-        return movies;
+        if (input.title) {
+            movies = movies
+                .filter(movie => input.title ? movie.title.includes(input.title) : true)
+        }
+
+        if (input.actors) {
+            movies = await asyncFilter(movies, input.actors, AreActorsInMovie)
+        }
+
+        return movies
     }
 
     @Mutation(() => Movie)
@@ -35,3 +47,19 @@ export class MovieResolver {
         return movie;
     }
 }
+
+async function AreActorsInMovie(searchedActors: ActorSearchInput[], movie: Movie): Promise<boolean> {
+    const movieActorList = await movie.actors(movie)
+
+    return searchedActors.every(searchedActor => 
+        movieActorList.some(actor =>
+            actor.firstName ? actor.firstName.includes(searchedActor.firstName) : false ||
+                actor.lastName ? actor.lastName.includes(searchedActor.lastName) : false ||
+                    actor.fullName ? actor.fullName(actor).includes(searchedActor.name) : false)
+    )
+} 
+
+const asyncFilter = async (movies: any, searchedActors: ActorSearchInput[], predicate: (sa: ActorSearchInput[], m: Movie) =>  Promise<boolean>): Promise<Array<Movie>> => 
+	movies.reduce(async ( filteredMovies: Array<Movie>, movie: Movie) =>
+		await predicate(searchedActors, movie) ? [...await filteredMovies, movie] : filteredMovies
+	, []);
