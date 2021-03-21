@@ -22,9 +22,9 @@ export class Movie extends BaseEntity {
     @Column("int")
     genreId: number;
 
-    @Field()
-    genre(@Root() parent: Movie): Genre {
-        return {id: 1, name: "Adventure", description: parent.title} as Genre // TODO
+    @Field(() => Genre)
+    async genre(@Root() parent: Movie): Promise<Genre | undefined> {
+        return await Genre.findOne(parent.genreId)
     }
 
     @Field(() => [Int])
@@ -32,8 +32,7 @@ export class Movie extends BaseEntity {
     actorIds: Array<number>;  
 
     @Field(() => [Actor], { nullable: true })
-    actors(@Root() parent: Movie): Actor[] {
-        console.log(parent)
-        return []; // TODO
+    async actors(@Root() parent: Movie): Promise<Actor[]> {
+        return await Actor.findByIds(parent.actorIds)
     }
 }
