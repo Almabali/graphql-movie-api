@@ -9,6 +9,7 @@ import { MeResolver } from "./modules/user/MeResolver";
 import { CreateUser } from "./modules/user/CreateUserResolver";
 import { MovieResolver } from "./modules/movie/MovieResolver";
 import { GenreResolver } from "./modules/genre/GenreResolver";
+import { ActorResolver } from "./modules/actor/ActorResolver";
 
 export const createSchema = async () =>
     await buildSchema({
@@ -22,6 +23,7 @@ export const createSchema = async () =>
             MeResolver,
             CreateUser,
             MovieResolver,
-            GenreResolver
+            GenreResolver,
+            ActorResolver
         ]
     });
