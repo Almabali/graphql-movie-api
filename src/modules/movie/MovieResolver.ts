@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Arg, Int } from "type-graphql";
 import { Movie } from "../../entity/Movie";
 import { MovieInput } from "./MovieInput";
 import { MovieSearchInput } from "./MovieSearchInput";
-import { ActorSearchInput } from "../actor/ActorSearchInput";
+import { ActorSearchInput, IsMatching } from "../actor/ActorSearchInput";
 
 @Resolver()
 export class MovieResolver {
@@ -51,15 +51,13 @@ export class MovieResolver {
 async function AreActorsInMovie(searchedActors: ActorSearchInput[], movie: Movie): Promise<boolean> {
     const movieActorList = await movie.actors(movie)
 
-    return searchedActors.every(searchedActor => 
+    return searchedActors.every(searchedActor =>
         movieActorList.some(actor =>
-            actor.firstName ? actor.firstName.includes(searchedActor.firstName) : false ||
-                actor.lastName ? actor.lastName.includes(searchedActor.lastName) : false ||
-                    actor.fullName ? actor.fullName(actor).includes(searchedActor.name) : false)
-    )
-} 
+            IsMatching(searchedActor, actor)
+        ))
+}
 
-const asyncFilter = async (movies: any, searchedActors: ActorSearchInput[], predicate: (sa: ActorSearchInput[], m: Movie) =>  Promise<boolean>): Promise<Array<Movie>> => 
-	movies.reduce(async ( filteredMovies: Array<Movie>, movie: Movie) =>
-		await predicate(searchedActors, movie) ? [...await filteredMovies, movie] : filteredMovies
-	, []);
+const asyncFilter = async (movies: any, searchedActors: ActorSearchInput[], predicate: (sa: ActorSearchInput[], m: Movie) => Promise<boolean>): Promise<Array<Movie>> =>
+    movies.reduce(async (filteredMovies: Array<Movie>, movie: Movie) =>
+        await predicate(searchedActors, movie) ? [...await filteredMovies, movie] : filteredMovies
+        , []);

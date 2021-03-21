@@ -1,7 +1,7 @@
 import { Resolver, Query, Mutation, Arg, Int } from "type-graphql";
 import { Actor } from "../../entity/Actor";
 import { ActorInput } from "./ActorInput";
-import { ActorSearchInput } from "./ActorSearchInput";
+import { ActorSearchInput, IsMatching } from "./ActorSearchInput";
 
 @Resolver()
 export class ActorResolver {
@@ -16,12 +16,10 @@ export class ActorResolver {
         @Arg("input", { nullable: true }) input: ActorSearchInput
     ): Promise<Actor[]> {
         const actors = await Actor.find();
-        if (!input) {return actors}       
+        if (!input) { return actors }
 
-        return actors.filter(actor => 
-            input.firstName ? actor.firstName.includes(input.firstName) : false ||
-            input.lastName ? actor.lastName.includes(input.lastName) : false ||
-            input.name ? actor.fullName(actor).includes(input.name) : false       
+        return actors.filter(actor =>
+            IsMatching(input, actor)
         );
     }
 
