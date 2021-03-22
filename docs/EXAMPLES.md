@@ -1,5 +1,5 @@
 mutation {addMovie(
-  input: {title: "Terminator", year:1992, actorIds: [3], categoryId: 2}
+  input: {title: "Terminator", year:1992, actorIds: [3], genreId: 2}
 ) {
   id
 }}
@@ -97,3 +97,12 @@ query {
     }
   }
 }
+
+query {wiki(id: 5) {
+  movie {id
+  title
+  }
+  wikiLink
+  wikiTitle
+  wikiFirstParagraph
+}}

@@ -5,6 +5,7 @@ import { MovieSearchInput } from "./MovieSearchInput";
 import { ActorSearchInput, IsMatching } from "../actor/ActorSearchInput";
 import { Container } from "typedi";
 import { MoviesWikiAPI } from "../../integration/wikipedia/MoviesWikiAPI";
+import { MovieWikiData } from "../../entity/MovieWikiData";
 
 const moviesWikiApi = Container.get(MoviesWikiAPI);
 
@@ -33,16 +34,23 @@ export class MovieResolver {
         return movies
     }
 
-    @Query(() => [Movie])
-    async wiki(@Arg("id", () => Int) id: number): Promise<Movie | undefined> {
-        const movie = await Movie.findOne(id)
-        console.log(movie)
-        if (!movie || movie === undefined) { return }
-        console.log("Calling soon")
-        const wikiData = await moviesWikiApi.getMovie(movie)
-        console.log(wikiData.data)
+    @Query(() => MovieWikiData)
+    async wiki(@Arg("id", () => Int) id: number): Promise<MovieWikiData | undefined> {
+        try {
+            const movie = await Movie.findOne(id)
+            console.log(movie)
+            if (!movie || movie === undefined) { throw undefined }
+            console.log("Calling soon")
+            const wikiData = await moviesWikiApi.getMovie(movie)
+            console.log(wikiData)
 
-        return movie
+            const movieWikiData = {movie: movie, wikiTitle: wikiData.title, wikiFirstParagraph: wikiData.firstParagraph, wikiLink: wikiData.link} as MovieWikiData
+
+            return movieWikiData
+
+        } catch (error) {
+            return undefined
+        }
     }
 
     @Mutation(() => Movie)

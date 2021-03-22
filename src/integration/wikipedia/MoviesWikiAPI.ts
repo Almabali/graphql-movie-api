@@ -1,6 +1,7 @@
 import { Movie } from "../../entity/Movie";
 import { Service } from "typedi";
 import { parseParagraph } from "./HtmlParserUtil";
+import { WikiData } from "../../types/WikiData";
 
 const axios = require('axios').default;
 
@@ -10,13 +11,15 @@ export class MoviesWikiAPI {
   baseURL = 'http://en.wikipedia.org/w/api.php';
 
 
-  async getMovie(movie: Movie) {
+  async getMovie(movie: Movie): Promise<WikiData> {
     let wikiInfo = await this.getWikiPageProperName(movie.title)
     let link = await this.getWikiPageLink(wikiInfo)
     let pagecontent = await this.getWikiPageContent(wikiInfo)
     console.log(wikiInfo)
     console.log(link)
     console.log(pagecontent)
+
+    return new WikiData(wikiInfo.properTitle, pagecontent, link )
   }
 
   async getWikiPageLink(info: WikiInfo): Promise<string> {
@@ -57,7 +60,6 @@ export class MoviesWikiAPI {
   }
 
   async getWikiPageContent(info: WikiInfo): Promise<string> {
-    https://en.wikipedia.org/w/api.php?action=parse&page=Pet_door&prop=text&formatversion=2
     try {
       const response = await axios.get(`${this.baseURL}`, {
         params: {
