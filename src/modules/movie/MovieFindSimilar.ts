@@ -2,6 +2,8 @@ import { Movie } from "src/entity/Movie"
 
 export const findSimilarTo = (master: Movie, movies: Array<Movie>): Array<Movie> => {
     const moviesByScore = new Map<Number, Number>()
+    movies = removeMasterFromList(master, movies)
+
     movies.forEach(
         movie => {
             const score = scoreMovie(master, movie)
@@ -20,7 +22,7 @@ export const findSimilarTo = (master: Movie, movies: Array<Movie>): Array<Movie>
 
 const scoreMovie = (master: Movie, movie: Movie): number => {
     let score = 0;
-    if (master.title.includes(movie.title) || movie.title.includes(master.title)) {
+    if (titlesMatch(master.title, movie.title)) {
         score += TITLE_WEIGHT
     }
     if (master.year === movie.year) {
@@ -34,10 +36,26 @@ const scoreMovie = (master: Movie, movie: Movie): number => {
     return score
 }
 
+const titlesMatch = (a: string, b: string ): boolean => {
+    a = a.toLowerCase()
+    b = b.toLowerCase()
+    if (a.includes(b) || b.includes(a)) {
+        return true
+    }
+
+    // TODO: implement complex, split(" "), remove "a". "the", "an" and find common in both arrays of words...
+
+    return false
+}
+
 const commonActorCount = (master: Movie, movie: Movie): number => {
     const commonActorIds = master.actorIds.filter(actor => movie.actorIds.includes(actor))
 
     return commonActorIds.length
+}
+
+const removeMasterFromList = (master: Movie, movies: Array<Movie>): Array<Movie> => {
+    return movies.filter(movie => movie.id !== master.id)
 }
 
 const ACTOR_WEIGHT: number = 1;
