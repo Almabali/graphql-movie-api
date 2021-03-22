@@ -6,6 +6,7 @@ import { ActorSearchInput, IsMatching } from "../actor/ActorSearchInput";
 import { Container } from "typedi";
 import { MoviesWikiAPI } from "../../integration/wikipedia/MoviesWikiAPI";
 import { MovieWikiData } from "../../entity/MovieWikiData";
+import { findSimilarTo } from "./MovieFindSimilar";
 
 const moviesWikiApi = Container.get(MoviesWikiAPI);
 
@@ -34,17 +35,29 @@ export class MovieResolver {
         return movies
     }
 
+    @Query(() => [Movie])
+    async similar_movies(@Arg("id", () => Int) id: number): Promise<Movie[]> {
+        if (!id) { return [] }
+        let allMovies = await Movie.find();
+        let movie = await Movie.findOne(id);
+        if (!movie) { return [] }
+
+        const similarMovies = findSimilarTo(movie, allMovies)
+
+        return similarMovies
+    }
+
     @Query(() => MovieWikiData)
     async wiki(@Arg("id", () => Int) id: number): Promise<MovieWikiData | undefined> {
         try {
             const movie = await Movie.findOne(id)
-            if (!movie || movie === undefined) { 
-                throw undefined 
+            if (!movie || movie === undefined) {
+                throw undefined
             }
 
             const wikiData = await moviesWikiApi.getMovie(movie)
 
-            return {movie: movie, wikiTitle: wikiData.title, wikiFirstParagraph: wikiData.firstParagraph, wikiLink: wikiData.link} as MovieWikiData
+            return { movie: movie, wikiTitle: wikiData.title, wikiFirstParagraph: wikiData.firstParagraph, wikiLink: wikiData.link } as MovieWikiData
 
         } catch (error) {
             return undefined
