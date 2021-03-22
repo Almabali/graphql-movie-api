@@ -7,23 +7,37 @@ Based on this [https://github.com/tajpouria/typegraphql-nextjs-boilerplate](http
 ## Development bootstrap
 
 
-# Install dependencies
+### Install dependencies
 ```sh
 > npm i
 ```
-# Setup development infrastructure
+### Setup development infrastructure
 ```
 > docker-compose up
 ```
 Note: docker-compose might not start PostgresQL, just start it manually via Docker Desktop
 
-# Starting the server
+### Starting the server
 ```
 > npm start
 ```
 
-# Example cases and usage
+### GraphiQL UI
+```
+localhost:4000/graphql
+```
+A graphiQL based UI is available for testing the GraphQL API.
+
+## Example cases and usage
 See [Examples](./docs/EXAMPLES.md)
 
-# Requiremens
+## Requirements
 See [Requirements](./docs/REQUIREMENTS.md)
+
+## Tech Stack
+ - Typescript
+ - typeORM
+ - typeGraphQL
+ - apollo-express-server
+ - axios
+ 
