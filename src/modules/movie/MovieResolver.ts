@@ -38,15 +38,13 @@ export class MovieResolver {
     async wiki(@Arg("id", () => Int) id: number): Promise<MovieWikiData | undefined> {
         try {
             const movie = await Movie.findOne(id)
-            console.log(movie)
-            if (!movie || movie === undefined) { throw undefined }
-            console.log("Calling soon")
+            if (!movie || movie === undefined) { 
+                throw undefined 
+            }
+
             const wikiData = await moviesWikiApi.getMovie(movie)
-            console.log(wikiData)
 
-            const movieWikiData = {movie: movie, wikiTitle: wikiData.title, wikiFirstParagraph: wikiData.firstParagraph, wikiLink: wikiData.link} as MovieWikiData
-
-            return movieWikiData
+            return {movie: movie, wikiTitle: wikiData.title, wikiFirstParagraph: wikiData.firstParagraph, wikiLink: wikiData.link} as MovieWikiData
 
         } catch (error) {
             return undefined
