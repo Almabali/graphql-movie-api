@@ -35,9 +35,9 @@ See [Examples](./docs/EXAMPLES.md)
 See [Requirements](./docs/REQUIREMENTS.md)
 
 ## Tech Stack
- - Typescript
- - typeORM
- - typeGraphQL
- - apollo-express-server
- - axios
+ - [Typescript](https://www.typescriptlang.org/)
+ - [typeORM](https://typeorm.io/#/)
+ - [typeGraphQL](https://typegraphql.com/)
+ - [apollo-express-server](https://www.apollographql.com/docs/apollo-server/v1/servers/express/)
+ - [axios](https://github.com/axios/axios)
  

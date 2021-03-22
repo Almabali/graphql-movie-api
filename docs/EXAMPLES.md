@@ -71,6 +71,25 @@ query {wiki(id: 5) {
 }}
 ```
 
+## Find similar movies
+
+The API allows for searching movies similar to another one. This uses a weighted field equality check.
+```
+query {
+  similar_movies(id:42) {
+    id
+    title
+    year
+    actors {
+      fullName
+    }
+    genre {
+      name
+    }
+  }
+}
+```
+
 ## Appendix
 
 ### Some other queries and mutations I've used:
